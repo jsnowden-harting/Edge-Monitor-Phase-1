@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Data Logger</title>
+
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+        <script type=text/javascript>
+            $(function() {
+                $('#start').on('click', function(e) {
+                    e.preventDefault();
+                    $.post('/start');
+                    return false;
+                });
+                $('#stop').on('click', function(e) {
+                    e.preventDefault();
+		            $.post('/stop');
+                    return false;
+                });
+                $('#rate').click(function(e) {
+                    var val = $('#rate').val();
+                    e.preventDefault();
+                    $.post('/rate', { val: val });
+                    return false;
+                });
+                $('#input_range').click(function(e) {
+                    var val = $('#input_range').val();
+                    e.preventDefault();
+                    $.post('/input_range', { val: val });
+                    return false;
+                });
+                $('#mode').click(function(e) {
+                    var val = $('#mode').val();
+                    e.preventDefault();
+                    $.post('/mode', { val: val });
+                    return false;
+                });
+            });
+	    setInterval(
+	    	function() {
+		    $.getJSON('/status', 
+			function(data) {
+		            $('#start').attr('disabled', data.start_disabled);
+			    $('#stop').attr('disabled', data.stop_disabled);
+			    $('#rate').attr('disabled', data.start_disabled);
+			    $('#rate').val(data.rate_value);
+			    $('#input_range').attr('disabled', data.start_disabled);
+			    $('#input_range').val(data.range_value);
+			    $('#mode').attr('disabled', data.start_disabled);
+			    $('#mode').val(data.mode_value);
+			    $('#error_alert').text(data.error_message);
+			    $('#error_alert').attr('hidden', data.error_message.trim()=='');
+			    $('#status_alert').text(data.status_message);
+			    $('#status_alert').attr('hidden', data.status_message.trim()=='');
+			});
+		},
+		100);
+        </script>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>USB-1608G Interface</h1>
+	    <input id=start type="submit" class="btn btn-success" value="Start">
+	    <input id=stop type="submit" class="btn btn-danger" value="Stop">
+
+            <select id="rate" class="form-select">
+                <option value="100">100 S/s</option>
+                <option value="1000">1 kS/s</option>
+                <option value="10000">10 kS/s</option>
+                <option value="100000">100 kS/s</option>
+            </select>
+
+            <select id="input_range" class="form-select">
+                <option value="1">+/- 1V</option>
+                <option value="2">+/- 2V</option>
+                <option value="5">+/- 5V</option>
+                <option value="10">+/- 10V</option>
+            </select>
+
+            <select id="mode" class="form-select">
+                <option value="single">Single-Ended</option>
+                <option value="differential">Differential</option>
+            </select>
+
+	    
+	    <p>
+	    	<div id="error_alert" class="alert alert-danger" role="alert"></div>
+            </p>
+
+	    <p>
+		<div id="status_alert" class="alert alert-info" role="alert"></div>
+	    </p>
+	</div>
+    </body>
+</html>
