@@ -23,19 +23,19 @@
 		            $.post('/stop');
                     return false;
                 });
-                $('#rate').click(function(e) {
+                $('#rate').on('change keyup paste', function(e) {
                     var val = $('#rate').val();
                     e.preventDefault();
                     $.post('/rate', { val: val });
                     return false;
                 });
-                $('#input_range').click(function(e) {
+                $('#input_range').on('click', function(e) {
                     var val = $('#input_range').val();
                     e.preventDefault();
                     $.post('/input_range', { val: val });
                     return false;
                 });
-                $('#mode').click(function(e) {
+                $('#mode').on('click', function(e) {
                     var val = $('#mode').val();
                     e.preventDefault();
                     $.post('/mode', { val: val });
@@ -49,7 +49,9 @@
 		            $('#start').attr('disabled', data.start_disabled);
 			    $('#stop').attr('disabled', data.stop_disabled);
 			    $('#rate').attr('disabled', data.start_disabled);
-			    $('#rate').val(data.rate_value);
+			    if (data.update_rate_value) {
+			    	$('#rate').val(data.rate_value);
+			    }
 			    $('#input_range').attr('disabled', data.start_disabled);
 			    $('#input_range').val(data.range_value);
 			    $('#mode').attr('disabled', data.start_disabled);
@@ -70,12 +72,17 @@
 	    <input id=start type="submit" class="btn btn-success" value="Start">
 	    <input id=stop type="submit" class="btn btn-danger" value="Stop">
 
+	    <label for="rate">Data Rate (Samples/second):</label>
+	    <input type="number" id="rate" name="rate">
+
+	    <!--
             <select id="rate" class="form-select">
                 <option value="100">100 S/s</option>
                 <option value="1000">1 kS/s</option>
                 <option value="10000">10 kS/s</option>
                 <option value="100000">100 kS/s</option>
             </select>
+	    -->
 
             <select id="input_range" class="form-select">
                 <option value="1">+/- 1V</option>
